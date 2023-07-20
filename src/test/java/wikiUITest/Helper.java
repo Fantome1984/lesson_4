@@ -12,6 +12,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 public class Helper extends UI_Test_Wiki {
     public Helper(AppiumDriver driver){this.driver = driver;}
@@ -19,7 +20,7 @@ public class Helper extends UI_Test_Wiki {
 
 
     public WebElement elementVisibility(By locator){
-        WebDriverWait wait = new WebDriverWait(driver, 10);
+        WebDriverWait wait = new WebDriverWait(driver, 15);
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
@@ -43,9 +44,8 @@ public class Helper extends UI_Test_Wiki {
     }
 
     public boolean waitForElementNotPresent(By locator){
-        WebDriverWait wait = new WebDriverWait(driver,10);
+        WebDriverWait wait = new WebDriverWait(driver,15);
         return wait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
-
     }
 
     public void swipeUp(){
@@ -76,6 +76,45 @@ public class Helper extends UI_Test_Wiki {
         }
 
     }
+
+    public void swipeElementToLeft(By by, String error_messege){
+
+        WebElement element = elementVisibility(by);
+        int left_x = element.getLocation().getX();
+        int rigth_x = left_x + element.getSize().getWidth();
+        int upper_y = element.getLocation().getY();
+        int lower_y = upper_y+element.getSize().getHeight();
+        int middle_y =(upper_y+lower_y)/2;
+        TouchAction action = new TouchAction(driver);
+        action.press(PointOption.point(rigth_x,middle_y)).
+                waitAction(WaitOptions.waitOptions(Duration.ofMillis(150)))
+                .moveTo(PointOption.point(left_x,middle_y)).release()
+                .perform();
+    }
+
+    public int chekAmmountElement(By by){
+        List elements = driver.findElements(by);
+        return elements.size();
+    }
+
+    public void assertElementNotPresent(By by,String error_messege){
+        int ammount_of_elements = chekAmmountElement(by);
+        if (ammount_of_elements >0){
+            String defaultErrorMessege ="An Element "  +by.toString()+" supposted be not present ";
+            throw new AssertionError(defaultErrorMessege + " " + error_messege);
+        }
+
+    }
+
+    public void assertElementPresent(By by, String error_messege){
+        int ammount_of_elements = chekAmmountElement(by);
+      Assertions.assertTrue(ammount_of_elements>0,error_messege);
+
+    }
+
+
+
+
     private AppiumDriver driver;
 }
 

@@ -7,8 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.remote.DesiredCapabilities;
-
 import java.net.URL;
+
 
 public class UI_Test_Wiki {
     protected AppiumDriver driver;
@@ -23,7 +23,9 @@ public class UI_Test_Wiki {
         capabilities.setCapability("appPackage", "org.wikipedia");
         capabilities.setCapability("appActivity", ".main.MainActivity");
         capabilities.setCapability("app", "C:\\Users\\nsshletkin\\Downloads\\homeWorkTwo\\src\\main\\java\\apks\\Wikipedia_2.7.50446-r-2023-06-28_Apkpure.apk");
+        capabilities.setCapability("orientation","PORTRAIT");
         driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+
     }
 
     @AfterEach
@@ -33,38 +35,73 @@ public class UI_Test_Wiki {
 
 
     private String buttonSkip = "org.wikipedia:id/fragment_onboarding_skip_button";
-    private String placeholder = "//android.widget.TextView[@text='Search Wikipedia']";
     private String searchBox = "org.wikipedia:id/search_container";
     private String searchText ="org.wikipedia:id/search_src_text";
-    private String closeButton ="org.wikipedia:id/search_close_btn";
-    private String searchResults="//android.view.ViewGroup[@bounds ='[0,231][1080,428]']";
-    private String footer = "//android.view.View[@bounds ='[0,1267][1080,1672]']";
-    private String menuButton ="org.wikipedia:id/page_toolbar_button_show_overflow_menu";
+    private String serchResultOne ="//android.widget.TextView[@text='High-level programming language']";
+    private String serchResultTwo ="//android.widget.TextView[@text='Java (programming language)']";
+    private String buttonSave = "org.wikipedia:id/page_save";
+    private String buttonAnotherReadingList = "//android.widget.TextView[@text='Add to another reading list']";
+    private String createNewReadingList = "//android.widget.TextView[@text='Create new']";
+    private String fieldNameNewReadingList = "org.wikipedia:id/text_input";
+    private String buttonOk="android:id/button1";
+    private String backButton = "//android.widget.ImageButton[@content-desc='Navigate up']";
+    private String сreatedReadingList ="//android.widget.TextView[@text='Saved articles']";
+    private String buttonSavedList = "org.wikipedia:id/nav_tab_reading_lists";
+    private String articlesTitile = "//android.view.View[@bounds='[42,821][913,908]']";
+    private String testTitile = "//android.view.View[@bounds='[42,821][913,994]']";
+
+
+
+
+
+
 
 
     @Test
-
-    public void testSwipeArtical()  {
+    public void savingArticles() {
         Helper helper = new Helper(driver);
         helper.elementClick(By.id(buttonSkip));
         helper.elementClick(By.id(searchBox));
-        helper.enteringAValue(By.id(searchText),"Appium");
-        helper.elementClick(By.xpath(searchResults));
-        helper.swipeUpToElement(By.xpath(footer),"Эллемент не найден",20);
+        helper.enteringAValue(By.id(searchText),"Java");
+        helper.elementClick(By.xpath(serchResultOne));
+        helper.elementClick(By.id(buttonSave));
+        helper.elementClick(By.id(buttonSave));
+        helper.elementClick(By.xpath(buttonAnotherReadingList));
+        helper.elementClick(By.xpath(createNewReadingList));
+        helper.enteringAValue(By.id(fieldNameNewReadingList),"Saved articles");
+        helper.elementClick(By.id(buttonOk));
+        helper.elementClick(By.xpath(backButton));
+        helper.elementClick(By.xpath(serchResultTwo));
+        helper.elementClick(By.id(buttonSave));
+        helper.elementClick(By.id(buttonSave));
+        helper.elementClick(By.xpath(buttonAnotherReadingList));
+        helper.elementClick(By.xpath(сreatedReadingList));
+        helper.elementClick(By.xpath(backButton));
+        helper.elementClick(By.xpath(backButton));
+        helper.elementClick(By.id(buttonSavedList));
+        helper.elementClick(By.xpath(сreatedReadingList));
+        helper.swipeElementToLeft(By.xpath(serchResultTwo),"Не удалось осуществить свайп");
+        helper.assertElementNotPresent(By.xpath(serchResultTwo),"Элемент отображается на старнице");
+        helper.elementVisibility(By.xpath(serchResultOne));
+        helper.elementClick(By.xpath(serchResultOne));
+        helper.assertElementHasText(By.xpath(articlesTitile),"JavaScript","Заголовок не соответсвует ожидаемому");
     }
+
+
 
     @Test
-    public void saveFirstArticalToMyList(){
+    public void assertTitile(){
         Helper helper = new Helper(driver);
         helper.elementClick(By.id(buttonSkip));
         helper.elementClick(By.id(searchBox));
-        helper.enteringAValue(By.id(searchText),"Appium");
-        helper.elementClick(By.xpath(searchResults));
-        helper.elementClick(By.id(menuButton));
-
-
-
+        helper.enteringAValue(By.id(searchText),"Java");
+        helper.elementClick(By.xpath(serchResultTwo));
+        helper.assertElementPresent(By.xpath(testTitile),"Titile not found");
     }
+
+
+
+
 
 
 }
